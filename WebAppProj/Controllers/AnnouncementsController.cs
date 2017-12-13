@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebAppProj.Data;
 using WebAppProj.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAppProj.Controllers
 {
@@ -20,12 +21,14 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Announcements
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Announcements.ToListAsync());
         }
 
         // GET: Announcements/Details/5
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +50,7 @@ namespace WebAppProj.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Details([Bind("AnnouncementsId,Comment")] AnnouncementDetailsViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -89,16 +93,16 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Announcements/Create
+        [Authorize(Roles = "Member")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Announcements/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Create([Bind("Id,AnnouncementDesc")] Announcement announcement)
         {
             if (ModelState.IsValid)
@@ -111,6 +115,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Announcements/Edit/5
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -127,10 +132,10 @@ namespace WebAppProj.Controllers
         }
 
         // POST: Announcements/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,AnnouncementDesc")] Announcement announcement)
         {
             if (id != announcement.Id)
@@ -162,6 +167,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Announcements/Delete/5
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,6 +188,7 @@ namespace WebAppProj.Controllers
         // POST: Announcements/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var announcement = await _context.Announcements.SingleOrDefaultAsync(m => m.Id == id);

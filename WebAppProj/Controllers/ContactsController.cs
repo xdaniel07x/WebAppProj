@@ -25,6 +25,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Contacts
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Index()
         {
             ApplicationUser user = GetCurrentUser();
@@ -33,6 +34,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Contacts/Details/5
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,16 +53,16 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Contacts/Create
+        [Authorize(Roles = "Member, Customer")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Contacts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Create([Bind("Id,Name")] Contacts contacts)
         {
             if (ModelState.IsValid)
@@ -83,6 +85,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Contacts/Edit/5
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -99,10 +102,9 @@ namespace WebAppProj.Controllers
         }
 
         // POST: Contacts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Contacts contacts)
         {
             if (id != contacts.Id)
@@ -134,6 +136,7 @@ namespace WebAppProj.Controllers
         }
 
         // GET: Contacts/Delete/5
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -154,6 +157,7 @@ namespace WebAppProj.Controllers
         // POST: Contacts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Member, Customer")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contacts = await _context.Contacts.SingleOrDefaultAsync(m => m.Id == id);

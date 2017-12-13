@@ -71,7 +71,7 @@ namespace WebAppProj
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, 
-            ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+            ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -104,7 +104,8 @@ namespace WebAppProj
 
             app.UseMvcWithDefaultRoute();
 
-            await DbInitializer.Initialize(context, userManager);
+            await DbInitializer.Initialize(context, userManager, roleManager);
+          
 
 
             app.UseMvc(routes =>
