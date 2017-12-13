@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using WebAppProj.Models;
 using WebAppProj.Models.AccountViewModels;
 using WebAppProj.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace WebAppProj.Controllers
 {
@@ -20,6 +21,7 @@ namespace WebAppProj.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -28,6 +30,7 @@ namespace WebAppProj.Controllers
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
             ISmsSender smsSender,
@@ -35,6 +38,7 @@ namespace WebAppProj.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -96,10 +100,24 @@ namespace WebAppProj.Controllers
         // GET: /Account/Register
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register(/*string returnUrl = null*/)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+
+            var selectList = new List<SelectListItem>();
+            foreach(var role in _roleManager.Roles)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = role.Name,
+                    Text = role.Name
+
+                });
+            }
+            ViewBag.Roles = selectList;
             return View();
+
+
+            //ViewData["ReturnUrl"] = returnUrl;
         }
 
         //
@@ -109,13 +127,27 @@ namespace WebAppProj.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+            var selectList = new List<SelectListItem>();
+            foreach (var role in _roleManager.Roles)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = role.Name,
+                    Text = role.Name
+
+                });
+            }
+            ViewBag.Roles = selectList;
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    result = await _userManager.AddToRoleAsync(user, model.RoleName);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
