@@ -26,6 +26,7 @@ namespace WebAppProj.Models.AccountViewModels
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Please select a role")]
+        [Display(Name = "Role")]
         public string RoleName { get; set; }
     }
 }

@@ -48,6 +48,8 @@ namespace WebAppProj.Controllers
             return View(viewModel);
         }
 
+        //Creates a new comment 
+        //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Member, Customer")]
@@ -192,6 +194,7 @@ namespace WebAppProj.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var announcement = await _context.Announcements.SingleOrDefaultAsync(m => m.Id == id);
+
             _context.Announcements.Remove(announcement);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

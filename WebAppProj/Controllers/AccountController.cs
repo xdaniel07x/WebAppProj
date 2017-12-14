@@ -100,9 +100,9 @@ namespace WebAppProj.Controllers
         // GET: /Account/Register
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(/*string returnUrl = null*/)
+        public IActionResult Register()
         {
-
+            // Creating a new list and adding the roles to it and then populating ViewBag
             var selectList = new List<SelectListItem>();
             foreach(var role in _roleManager.Roles)
             {
@@ -115,9 +115,6 @@ namespace WebAppProj.Controllers
             }
             ViewBag.Roles = selectList;
             return View();
-
-
-            //ViewData["ReturnUrl"] = returnUrl;
         }
 
         //
@@ -127,6 +124,7 @@ namespace WebAppProj.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+            // Re-populating ViewBag
             var selectList = new List<SelectListItem>();
             foreach (var role in _roleManager.Roles)
             {
@@ -138,6 +136,7 @@ namespace WebAppProj.Controllers
                 });
             }
             ViewBag.Roles = selectList;
+
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
@@ -148,8 +147,6 @@ namespace WebAppProj.Controllers
                 {
                     result = await _userManager.AddToRoleAsync(user, model.RoleName);
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
