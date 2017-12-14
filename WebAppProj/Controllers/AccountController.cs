@@ -161,7 +161,6 @@ namespace WebAppProj.Controllers
             return View(model);
         }
 
-        //
         // POST: /Account/Logout
         [HttpPost]
         [ValidateAntiForgeryToken]
